@@ -1,9 +1,9 @@
 import {randomBytes} from 'crypto';
 
-export function randomId (len = 32) {
+export function randomId (len = 17) {
     return randomBytes(len).toString('hex');
 }
 
-export function runIt (fn) {
-   return fn();
+export function noBindEnv (fn) {
+   return fn;
 }

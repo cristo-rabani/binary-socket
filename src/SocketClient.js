@@ -1,9 +1,8 @@
 import EventEmitter from 'events';
 import BufferStreamReader from 'buffer-stream-reader';
-import WebSocket from 'ws';
 import {Buffer} from 'buffer';
 import nextTick from 'next-tick';
-import {randomId, runIt} from './helpers';
+import {randomId, noBindEnv} from './helpers';
 import {BinaryStream, msgpack} from './stream';
 
 export class SocketClient extends EventEmitter {
@@ -13,22 +12,36 @@ export class SocketClient extends EventEmitter {
         this._options = Object.assign({
             chunkSize: 40960,
             handleProtocols: false,
-            bindEnvironment: (typeof Meteor === 'object' && Meteor.bindEnvironment) ? Meteor.bindEnvironment : runIt
+            bindEnvironment: typeof Meteor === 'object' && Meteor.bindEnvironment
         }, options);
 
-        this._bindEnvironment = options.bindEnvironment;
-        delete options.bindEnvironment;
+        this._bindEnvironment = options.bindEnvironment || noBindEnv;
 
         this.streams = {};
 
         if (typeof socket === 'string') {
-            this._socket = new WebSocket(socket);
+            if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+                const WebSocket = require('ws');
+                this._socket = new WebSocket(socket);
+            } else {
+                if (typeof WebSocket === 'undefined') {
+                    throw new Error('Missing WebSocket!');
+                }
+                this._socket = new WebSocket(socket);
+            }
         } else {
             // Use odd numbered ids for server originated streams
             this._socket = socket;
         }
 
         this._socket.binaryType = 'arraybuffer';
+
+        if (!this._socket.on && this._socket.addEventListener) {
+            this._socket.on = this._socket.addEventListener;
+        }
+        if (!this._socket.on && this._socket.attachEvent) {
+            this._socket.on = this._socket.attachEvent;
+        }
 
         this._socket.on('open', () => this.emit('open'));
 
@@ -43,7 +56,10 @@ export class SocketClient extends EventEmitter {
             Object.keys(this.streams).forEach(key => this.streams[key]._onClose());
             this.emit('close', code, message);
         });
-        this._socket.on('message', (data) => {
+        this._socket.on('message', data => {
+            if (data.data) {
+                data = data.data;
+            }
             nextTick(this._bindEnvironment(() => {
                 // Message format
                 // [command, payload, streamId]
