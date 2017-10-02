@@ -74,10 +74,9 @@ export class BinaryStream extends Stream {
             }
             const out = this._write('d', data, this.id);
             return !this.paused && out;
-        } else {
-            this.emit('error', new Error('Stream is not writable'));
-            return false;
         }
+        this.emit('error', new Error('Stream is not writable'));
+        return false;
     }
 
     end () {

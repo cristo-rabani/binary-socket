@@ -33,23 +33,14 @@ export class SocketClient extends EventEmitter {
         this._socket.on('open', () => this.emit('open'));
 
         this._socket.on('drain', () => {
-            const ids = Object.keys(this.streams);
-            for (let i = 0, ii = ids.length; i < ii; i++) {
-                this.streams[ids[i]]._onDrain();
-            }
+            Object.keys(this.streams).forEach(key => this.streams[key]._onDrain());
         });
         this._socket.on('error', (error) => {
-            const ids = Object.keys(this.streams);
-            for (let i = 0, ii = ids.length; i < ii; i++) {
-                this.streams[ids[i]]._onError(error);
-            }
+            Object.keys(this.streams).forEach(key => this.streams[key]._onError(error));
             this.emit('error', error);
         });
         this._socket.on('close', (code, message) => {
-            const ids = Object.keys(this.streams);
-            for (let i = 0, ii = ids.length; i < ii; i++) {
-                this.streams[ids[i]]._onClose();
-            }
+            Object.keys(this.streams).forEach(key => this.streams[key]._onClose());
             this.emit('close', code, message);
         });
         this._socket.on('message', (data) => {
@@ -151,11 +142,11 @@ export class SocketClient extends EventEmitter {
                     default:
                         this.emit('error', new Error('Unrecognized command type received: ' + data[0]));
                 }
-            });
+            }));
         });
     }
 
-    send (data, meta){
+    send (data, meta) {
         const stream = this.createStream(meta);
         if(data instanceof Stream) {
             data.pipe(stream);
@@ -169,7 +160,7 @@ export class SocketClient extends EventEmitter {
         return stream;
     }
 
-    createStream (meta){
+    createStream (meta) {
         if(this._socket.readyState !== WebSocket.OPEN) {
             throw new Error('Client is not yet connected or gone');
         }
