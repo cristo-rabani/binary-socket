@@ -2,7 +2,8 @@ import EventEmitter from 'events';
 import BufferStreamReader from 'buffer-stream-reader';
 import WebSocket from 'ws';
 import {Buffer} from 'buffer';
-
+import nextTick from 'next-tick';
+import {randomId, runIt} from './helpers';
 import {BinaryStream, msgpack} from './stream';
 
 export class SocketClient extends EventEmitter {
@@ -11,17 +12,19 @@ export class SocketClient extends EventEmitter {
 
         this._options = Object.assign({
             chunkSize: 40960,
-            handleProtocols: false
+            handleProtocols: false,
+            bindEnvironment: (typeof Meteor === 'object' && Meteor.bindEnvironment) ? Meteor.bindEnvironment : runIt
         }, options);
+
+        this._bindEnvironment = options.bindEnvironment;
+        delete options.bindEnvironment;
 
         this.streams = {};
 
         if (typeof socket === 'string') {
-            this._nextId = 0;
             this._socket = new WebSocket(socket);
         } else {
             // Use odd numbered ids for server originated streams
-            this._nextId = 1;
             this._socket = socket;
         }
 
@@ -50,9 +53,9 @@ export class SocketClient extends EventEmitter {
             this.emit('close', code, message);
         });
         this._socket.on('message', (data) => {
-            process.nextTick(() => {
+            nextTick(this._bindEnvironment(() => {
                 // Message format
-                // [command, payload, bonus ]
+                // [command, payload, streamId]
                 //
                 // New stream
                 // [ 'n'  , Meta , new streamId ]
@@ -77,8 +80,6 @@ export class SocketClient extends EventEmitter {
                 // Close
                 // [ 'c'  , null , streamId ]
                 //
-
-                // data = data.data;
 
                 try {
                     data = msgpack.decode(data);
@@ -172,8 +173,7 @@ export class SocketClient extends EventEmitter {
         if(this._socket.readyState !== WebSocket.OPEN) {
             throw new Error('Client is not yet connected or gone');
         }
-        const streamId = this._nextId;
-        this._nextId += 2;
+        const streamId = randomId(12);
         const binaryStream = new BinaryStream(this._socket, streamId, true, meta);
         binaryStream.on('close', () => {
             delete this.streams[streamId];

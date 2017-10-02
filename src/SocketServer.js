@@ -1,5 +1,5 @@
 import SocketClient from './SocketClient';
-import {randomId} from './helpers';
+import {randomId, runIt} from './helpers';
 import EventEmitter from 'events';
 import ws from 'ws';
 
@@ -15,7 +15,7 @@ export class SocketServer extends EventEmitter {
         options = Object.assign({
             host: '0.0.0.0',
             chunkSize: 40960,
-            bindEnvironment: (typeof Meteor === 'object' && Meteor.bindEnvironment) ? Meteor.bindEnvironment : nop
+            bindEnvironment: (typeof Meteor === 'object' && Meteor.bindEnvironment) ? Meteor.bindEnvironment : runIt
         }, options);
 
         this._bindEnvironment = options.bindEnvironment;
@@ -47,8 +47,5 @@ export class SocketServer extends EventEmitter {
     }
 }
 
-function nop () {
-    /*nop*/
-}
 
 export default SocketServer;
