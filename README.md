@@ -1,4 +1,5 @@
 # Binary Socket
+Simple Binary Sockets for node & web, ready to use, builded on thoroughly tested modules, standards. Sockets are easy to integrate.
 
 ## Installation
 ```#bash
