@@ -63,7 +63,6 @@ export class BinaryStream extends Stream {
         if (this._socket.readyState !== this._socket.constructor.OPEN) {
             return false;
         }
-        console.log(cmd, data, _id);
         const message = msgpack.encode([cmd, data, _id]).slice();
         return this._socket.send(message) !== false;
     }
