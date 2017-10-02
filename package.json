@@ -1,6 +1,6 @@
 {
   "name": "binary-socket",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Simple Binary Sockets to use, builded on thoroughly tested modules, standards and it's easy to integrate.",
   "main": "index.js",
   "scripts": {
