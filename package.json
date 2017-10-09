@@ -14,11 +14,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vazco/process-custodian"
+    "url": "https://github.com/cristo-rabani/binary-socket"
   },
   "author": "Krzysztof Rozalski (cristo.rabani@gmail.com)",
   "license": "MIT",
-  "homepage": "https://github.com/vazco/process-custodian#readme",
+  "homepage": "https://github.com/cristo-rabani/binary-socket#readme",
   "options": {
     "mocha": "--require scripts/mocha_runner src/**/__tests__/**/*.js"
   },
