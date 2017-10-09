@@ -43,6 +43,8 @@ var _events2 = _interopRequireDefault(_events);
 
 var _stream = require('stream');
 
+var _stream2 = _interopRequireDefault(_stream);
+
 var _bufferStreamReader = require('buffer-stream-reader');
 
 var _bufferStreamReader2 = _interopRequireDefault(_bufferStreamReader);
@@ -55,7 +57,7 @@ var _nextTick2 = _interopRequireDefault(_nextTick);
 
 var _helpers = require('./helpers');
 
-var _stream2 = require('./stream');
+var _stream3 = require('./stream');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -157,7 +159,7 @@ var SocketClient = exports.SocketClient = function (_EventEmitter) {
                 //
 
                 try {
-                    data = _stream2.msgpack.decode(data);
+                    data = _stream3.msgpack.decode(data);
                 } catch (ex) {
                     return _this.emit('error', new Error('Received broken data: ' + ex));
                 }
@@ -180,7 +182,7 @@ var SocketClient = exports.SocketClient = function (_EventEmitter) {
                 switch (data[0]) {
                     case 'n':
                         var meta = data[1];
-                        var newBinaryStream = new _stream2.BinaryStream(_this._socket, streamId, false);
+                        var newBinaryStream = new _stream3.BinaryStream(_this._socket, streamId, false);
                         newBinaryStream.on('close', function () {
                             delete _this.streams[streamId];
                         });
@@ -235,7 +237,7 @@ var SocketClient = exports.SocketClient = function (_EventEmitter) {
         key: 'send',
         value: function send(data, meta) {
             var stream = this.createStream(meta);
-            if (data instanceof _stream.Stream) {
+            if (data instanceof _stream2.default) {
                 data.pipe(stream);
             } else if (_buffer.Buffer.isBuffer(data)) {
                 new _bufferStreamReader2.default(data, { chunkSize: this._options.chunkSize }).pipe(stream);
@@ -253,7 +255,7 @@ var SocketClient = exports.SocketClient = function (_EventEmitter) {
                 throw new Error('Client is not yet connected or gone');
             }
             var streamId = (0, _helpers.randomId)(12);
-            var binaryStream = new _stream2.BinaryStream(this._socket, streamId, true, meta);
+            var binaryStream = new _stream3.BinaryStream(this._socket, streamId, true, meta);
             binaryStream.on('close', function () {
                 delete _this2.streams[streamId];
             });

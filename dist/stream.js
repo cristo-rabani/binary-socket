@@ -27,6 +27,8 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 
 var _stream = require('stream');
 
+var _stream2 = _interopRequireDefault(_stream);
+
 var _msgpack = require('msgpack5');
 
 var _msgpack2 = _interopRequireDefault(_msgpack);
@@ -167,6 +169,6 @@ var BinaryStream = exports.BinaryStream = function (_Stream) {
         }
     }]);
     return BinaryStream;
-}(_stream.Stream);
+}(_stream2.default);
 
 exports.default = BinaryStream;
