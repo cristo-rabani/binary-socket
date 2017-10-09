@@ -5,5 +5,5 @@ export function randomId (len = 17) {
 }
 
 export function noBindEnv (fn) {
-   return fn;
+    return fn;
 }

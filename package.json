@@ -1,6 +1,6 @@
 {
   "name": "binary-socket",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Simple Binary Sockets to use, builded on thoroughly tested modules, standards and it's easy to integrate.",
   "main": "index.js",
   "scripts": {
@@ -44,10 +44,10 @@
   },
   "dependencies": {
     "babel-runtime": "^6.x.x",
+    "buffer": "^5.0.6",
     "buffer-stream-reader": "^0.1.1",
     "msgpack5": "^3.5.1",
-    "next-tick": "^1.0.0",
-    "buffer": "^5.0.6",
+    "next-tick-2": "^1.1.0",
     "ws": "^3.2.0"
   },
   "optionalDependencies": {

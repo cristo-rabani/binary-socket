@@ -11,7 +11,7 @@ export class SocketServer extends EventEmitter {
 
     constructor (options = {}) {
         super();
-
+        /*global Meteor*/
         options = Object.assign({
             host: '0.0.0.0',
             chunkSize: 40960,
@@ -41,7 +41,7 @@ export class SocketServer extends EventEmitter {
         this._server.on('error', error => this.emit('error', error));
     }
 
-    close (code, message){
+    close (code, message) {
         this._server.close(code, message);
     }
 }

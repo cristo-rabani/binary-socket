@@ -47,7 +47,7 @@ var _bufferStreamReader2 = _interopRequireDefault(_bufferStreamReader);
 
 var _buffer = require('buffer');
 
-var _nextTick = require('next-tick');
+var _nextTick = require('next-tick-2');
 
 var _nextTick2 = _interopRequireDefault(_nextTick);
 

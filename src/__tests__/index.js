@@ -1,4 +1,4 @@
-import {asset} from 'chai';
+import {assert} from 'chai';
 const {describe, it} = global;
 
 describe('test 1', () => {

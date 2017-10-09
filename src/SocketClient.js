@@ -1,14 +1,15 @@
 import EventEmitter from 'events';
+import {Stream} from 'stream';
 import BufferStreamReader from 'buffer-stream-reader';
 import {Buffer} from 'buffer';
-import nextTick from 'next-tick';
+import nextTick from 'next-tick-2';
 import {randomId, noBindEnv} from './helpers';
 import {BinaryStream, msgpack} from './stream';
 
 export class SocketClient extends EventEmitter {
     constructor (socket, options = {}) {
         super();
-
+        /*global Meteor*/
         this._options = Object.assign({
             chunkSize: 40960,
             handleProtocols: false,
@@ -48,10 +49,10 @@ export class SocketClient extends EventEmitter {
         this._socket.on('drain', () => {
             Object.keys(this.streams).forEach(key => this.streams[key]._onDrain());
         });
-        this._socket.on('error', (error) => {
+        this._socket.on('error', (error => {
             Object.keys(this.streams).forEach(key => this.streams[key]._onError(error));
             this.emit('error', error);
-        });
+        }));
         this._socket.on('close', (code, message) => {
             Object.keys(this.streams).forEach(key => this.streams[key]._onClose());
             this.emit('close', code, message);
@@ -164,20 +165,18 @@ export class SocketClient extends EventEmitter {
 
     send (data, meta) {
         const stream = this.createStream(meta);
-        if(data instanceof Stream) {
+        if (data instanceof Stream) {
             data.pipe(stream);
+        } else if (Buffer.isBuffer(data)) {
+            (new BufferStreamReader(data, {chunkSize: this._options.chunkSize})).pipe(stream);
         } else {
-            if(Buffer.isBuffer(data)) {
-                (new BufferStreamReader(data, {chunkSize: this._options.chunkSize})).pipe(stream);
-            } else {
-                stream.write(data);
-            }
+            stream.write(data);
         }
         return stream;
     }
 
     createStream (meta) {
-        if(this._socket.readyState !== WebSocket.OPEN) {
+        if (this._socket.readyState !== WebSocket.OPEN) {
             throw new Error('Client is not yet connected or gone');
         }
         const streamId = randomId(12);

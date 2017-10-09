@@ -3,3 +3,5 @@ extends:
 globals:
   - global
   - Meteor
+rules:
+  no-case-declarations: 0
