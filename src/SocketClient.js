@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import {Stream} from 'stream';
+import Stream from 'stream';
 import BufferStreamReader from 'buffer-stream-reader';
 import {Buffer} from 'buffer';
 import nextTick from 'next-tick-2';

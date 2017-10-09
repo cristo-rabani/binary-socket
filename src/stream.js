@@ -1,4 +1,4 @@
-import {Stream} from 'stream';
+import Stream from 'stream';
 import Msgpack5 from 'msgpack5';
 export const msgpack = Msgpack5();
 const ArrayBufferClass = typeof ArrayBuffer !== 'undefined' ? ArrayBuffer : () => {/*nop*/};

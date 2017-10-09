@@ -57,11 +57,10 @@ var SocketServer = exports.SocketServer = function (_EventEmitter) {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         (0, _classCallCheck3.default)(this, SocketServer);
 
+        /*global Meteor*/
         var _this = (0, _possibleConstructorReturn3.default)(this, (SocketServer.__proto__ || (0, _getPrototypeOf2.default)(SocketServer)).call(this));
 
         _this.clients = {};
-
-
         options = (0, _assign2.default)({
             host: '0.0.0.0',
             chunkSize: 40960,
