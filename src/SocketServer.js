@@ -1,7 +1,6 @@
 import SocketClient from './SocketClient';
 import {randomId, noBindEnv} from './helpers';
 import EventEmitter from 'events';
-import {Server} from 'ws';
 
 /**
  * Binary Socket
@@ -19,7 +18,7 @@ export class SocketServer extends EventEmitter {
         }, options);
 
         this._bindEnvironment = options.bindEnvironment || noBindEnv;
-
+        const Server = require('ws').Server;
         if (options.server && (options.server instanceof Server)) {
             this._server  = options.server;
         } else {

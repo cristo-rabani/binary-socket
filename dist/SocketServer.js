@@ -43,8 +43,6 @@ var _events = require('events');
 
 var _events2 = _interopRequireDefault(_events);
 
-var _ws = require('ws');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -68,11 +66,11 @@ var SocketServer = exports.SocketServer = function (_EventEmitter) {
         }, options);
 
         _this._bindEnvironment = options.bindEnvironment || _helpers.noBindEnv;
-
-        if (options.server && options.server instanceof _ws.Server) {
+        var Server = require('ws').Server;
+        if (options.server && options.server instanceof Server) {
             _this._server = options.server;
         } else {
-            _this._server = new _ws.Server(options);
+            _this._server = new Server(options);
         }
         _this._options = options;
 
